@@ -1,1 +1,8 @@
 .DS_Store
+Archive.zip
+# v1 working files, superseded by assets/src + assets/gen
+assets/ss_*.jpg
+assets/icon_*.jpg
+assets/badge_*.jpg
+assets/play_icon_cd.png
+assets/meta.json
