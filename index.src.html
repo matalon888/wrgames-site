@@ -1,0 +1,639 @@
+<title>WRGames</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@85..112,400..900&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+<style>
+:root{
+  /* the night sky behind a game made of bright daylight */
+  --night:#070C16;
+  --night-2:#0C1424;
+  --night-3:#152134;
+  --line:rgba(146,172,204,.20);
+  --paper:#E7EEF5;
+  --paper-2:#D6E2EE;
+  --ink:#F3F7FB;
+  --ink-dim:#93A6BE;
+  --ink-paper:#0A1526;
+  --ink-paper-dim:#4A6280;
+  --red:#E8342B;      /* the callout banner in their own screenshots */
+  --red-deep:#A81A12;
+  --sky:#6EC6F5;      /* pulled from the game's daylight */
+  --amber:#FFB020;    /* the boost bar */
+
+  --display:'Archivo',ui-sans-serif,system-ui,sans-serif;
+  --sans:'IBM Plex Sans',ui-sans-serif,system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,Menlo,monospace;
+
+  --pad:clamp(20px,5vw,72px);
+  --maxw:1320px;
+}
+
+*,*::before,*::after{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--night);
+  color:var(--ink);
+  font-family:var(--sans);
+  font-size:16px;
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
+a{color:inherit}
+img{display:block;max-width:100%}
+
+h1,h2,h3{
+  font-family:var(--display);
+  font-weight:900;
+  font-variation-settings:'wdth' 104;
+  text-transform:uppercase;
+  line-height:.92;
+  letter-spacing:-.015em;
+  text-wrap:balance;
+  margin:0;
+}
+h1{font-size:clamp(2.6rem,7.4vw,6.1rem);letter-spacing:-.025em}
+h2{font-size:clamp(1.9rem,4.4vw,3.5rem)}
+h3{font-size:clamp(1.15rem,2vw,1.6rem);font-weight:800}
+p{margin:0}
+
+.wrap{max-width:var(--maxw);margin:0 auto;padding-inline:var(--pad)}
+section[id]{scroll-margin-top:76px}
+
+/* ---- shared atoms ---- */
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;
+  text-transform:uppercase;color:var(--sky);
+}
+.lede{font-size:clamp(1rem,1.45vw,1.16rem);color:var(--ink-dim);max-width:38em}
+
+/* the game's own callout banner, used as the site's button */
+.banner{
+  display:inline-block;text-decoration:none;
+  background:var(--red);color:#fff;
+  padding:.72rem 1.5rem .8rem;
+  transform:skewX(-8deg);
+  box-shadow:0 6px 0 var(--red-deep);
+  transition:transform .15s ease,box-shadow .15s ease;
+}
+.banner > span{display:block;transform:skewX(8deg)}
+.banner b{
+  display:block;font-family:var(--display);font-weight:900;
+  font-size:1.02rem;letter-spacing:.02em;text-transform:uppercase;line-height:1;
+}
+.banner i{
+  display:block;font-style:normal;font-family:var(--mono);
+  font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;
+  opacity:.82;margin-top:.32rem;
+}
+.banner:hover{transform:skewX(-8deg) translateY(2px);box-shadow:0 4px 0 var(--red-deep)}
+.banner:focus-visible{outline:3px solid var(--amber);outline-offset:4px}
+
+/* the "TRAVELED / 281 ft" HUD pill, relabelled with media metrics */
+.chip{
+  display:inline-flex;flex-direction:column;gap:.1rem;
+  background:rgba(7,12,22,.78);border:1px solid rgba(255,255,255,.22);
+  border-radius:11px;padding:.42rem .7rem .48rem;backdrop-filter:blur(6px);
+}
+.chip .k{font-family:var(--mono);font-size:.56rem;letter-spacing:.16em;text-transform:uppercase;color:#C9D8EA}
+.chip .v{font-family:var(--display);font-weight:900;font-size:.98rem;line-height:1;color:#fff;font-variant-numeric:tabular-nums}
+
+/* ---- HUD rail: the boost bar from the left of every screenshot ---- */
+.rail{position:fixed;left:14px;top:50%;transform:translateY(-50%);z-index:40;display:none}
+.rail-track{width:7px;height:180px;border-radius:4px;background:rgba(146,172,204,.18);
+  border:1px solid var(--line);overflow:hidden;display:flex;align-items:flex-end}
+.rail-fill{width:100%;height:0%;background:linear-gradient(180deg,var(--amber),var(--red))}
+.rail-label{font-family:var(--mono);font-size:.55rem;letter-spacing:.14em;color:var(--ink-dim);
+  writing-mode:vertical-rl;margin-top:10px;text-transform:uppercase}
+@media(min-width:1120px){.rail{display:flex;flex-direction:column;align-items:center}}
+
+/* ---- nav ---- */
+.nav{position:sticky;top:0;z-index:50;background:rgba(7,12,22,.86);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line)}
+.nav-in{max-width:var(--maxw);margin:0 auto;padding:.7rem var(--pad);
+  display:flex;align-items:center;gap:1.4rem}
+.mark{display:flex;align-items:center;gap:.6rem;text-decoration:none}
+.mark-box{width:30px;height:30px;background:var(--red);display:grid;place-items:center;
+  font-family:var(--display);font-weight:900;font-size:.8rem;color:#fff;transform:skewX(-8deg)}
+.mark-box span{transform:skewX(8deg)}
+.mark-name{font-family:var(--display);font-weight:900;font-size:1.02rem;letter-spacing:.01em;text-transform:uppercase}
+.nav-links{display:none;gap:1.35rem;margin-left:auto;font-family:var(--mono);
+  font-size:.68rem;letter-spacing:.13em;text-transform:uppercase}
+.nav-links a{color:var(--ink-dim);text-decoration:none}
+.nav-links a:hover{color:var(--ink)}
+.nav .banner{margin-left:auto;padding:.5rem 1rem .55rem;box-shadow:0 4px 0 var(--red-deep)}
+.nav .banner b{font-size:.78rem}
+.nav .banner i{display:none}
+@media(min-width:900px){.nav-links{display:flex}.nav .banner{margin-left:0}}
+
+/* ---- hero ---- */
+.hero{padding:clamp(48px,7vw,88px) 0 clamp(40px,6vw,72px)}
+.hero-grid{display:grid;gap:clamp(34px,5vw,56px);align-items:center}
+@media(min-width:1000px){.hero-grid{grid-template-columns:1.08fr .92fr}}
+.hero h1{margin:.9rem 0 1.2rem}
+.hero h1 em{font-style:normal;color:var(--red)}
+.hero-cta{display:flex;flex-wrap:wrap;gap:1.1rem;align-items:center;margin-top:1.8rem}
+.hero-sub{font-family:var(--mono);font-size:.7rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim)}
+
+.phones{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(10px,1.6vw,20px);align-items:end}
+.phone{position:relative;border-radius:20px;overflow:hidden;border:2px solid rgba(255,255,255,.16);
+  background:var(--night-3);box-shadow:0 24px 60px rgba(0,0,0,.55)}
+.phone img{width:100%;height:auto}
+.phone::after{content:'';position:absolute;inset:0;
+  background:linear-gradient(180deg,rgba(7,12,22,0) 55%,rgba(7,12,22,.55));pointer-events:none}
+.phone .chip{position:absolute;left:8px;bottom:8px;z-index:2}
+.phone:nth-child(1){transform:translateY(26px) rotate(-3deg)}
+.phone:nth-child(2){transform:scale(1.09);z-index:2}
+.phone:nth-child(3){transform:translateY(26px) rotate(3deg)}
+
+/* ---- marquee of real inventory ---- */
+.strip{margin-top:clamp(40px,6vw,72px);border-block:1px solid var(--line);
+  padding:1.1rem 0;overflow:hidden;background:var(--night-2)}
+.strip-row{display:flex;gap:12px;width:max-content;animation:slide 46s linear infinite}
+.strip-row img{width:112px;border-radius:9px;border:1px solid rgba(255,255,255,.1)}
+@keyframes slide{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+
+/* ---- thesis ---- */
+.thesis{padding:clamp(70px,10vw,140px) 0}
+.thesis-body{font-family:var(--display);font-weight:500;font-variation-settings:'wdth' 96;
+  text-transform:none;font-size:clamp(1.35rem,3.1vw,2.35rem);line-height:1.28;
+  letter-spacing:-.01em;max-width:20em}
+.thesis-body .w{color:var(--ink);opacity:.32;transition:opacity .18s linear}
+.pull{margin-top:clamp(38px,5vw,64px);border-left:3px solid var(--red);padding-left:1.3rem;max-width:32em}
+.pull p{font-family:var(--display);font-weight:800;font-size:clamp(1.05rem,2vw,1.5rem);
+  text-transform:uppercase;line-height:1.12;letter-spacing:-.01em}
+.pull .eyebrow{display:block;margin-bottom:.6rem}
+
+/* ---- the sequence ---- */
+.seq{padding:clamp(60px,8vw,110px) 0;border-top:1px solid var(--line)}
+.seq-head{display:flex;flex-wrap:wrap;gap:1rem 2rem;align-items:end;justify-content:space-between;margin-bottom:clamp(30px,4vw,54px)}
+.steps{display:grid;gap:1px;background:var(--line);border:1px solid var(--line)}
+@media(min-width:780px){.steps{grid-template-columns:repeat(2,1fr)}}
+@media(min-width:1180px){.steps{grid-template-columns:repeat(5,1fr)}}
+.step{background:var(--night);padding:1.5rem 1.15rem 1.7rem;display:flex;flex-direction:column;gap:.7rem}
+.step-n{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;color:var(--red)}
+.step h3{color:var(--ink)}
+.step p{font-size:.93rem;color:var(--ink-dim)}
+
+/* ---- ledger: the one bright room ---- */
+.ledger{background:var(--paper);color:var(--ink-paper);padding:clamp(60px,8vw,110px) 0}
+.ledger h2{color:var(--ink-paper)}
+.ledger .eyebrow{color:var(--red)}
+.ledger-grid{display:grid;gap:1px;background:rgba(10,21,38,.16);border:1px solid rgba(10,21,38,.16);margin-top:clamp(28px,4vw,46px)}
+@media(min-width:620px){.ledger-grid{grid-template-columns:repeat(3,1fr)}}
+.fig{background:var(--paper);padding:1.4rem 1.3rem 1.5rem}
+.fig .n{font-family:var(--display);font-weight:900;font-size:clamp(2rem,4.6vw,3.1rem);
+  line-height:1;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.fig .l{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;
+  color:var(--ink-paper-dim);margin-top:.7rem}
+.fig .s{font-size:.86rem;color:var(--ink-paper-dim);margin-top:.28rem}
+.note{font-family:var(--mono);font-size:.7rem;line-height:1.7;color:var(--ink-paper-dim);
+  margin-top:1.4rem;max-width:60ch}
+
+/* ---- inventory: stacked cards ---- */
+.inv{padding:clamp(60px,8vw,110px) 0 0;border-top:1px solid var(--line)}
+.stack{margin-top:clamp(28px,4vw,48px)}
+.slot{height:clamp(560px,78vh,700px);display:flex;align-items:flex-start;justify-content:center}
+.game{position:sticky;width:100%;border:1px solid var(--line);border-radius:22px;
+  background:linear-gradient(180deg,var(--night-2),var(--night));padding:clamp(18px,2.4vw,30px);
+  transform-origin:top center;will-change:transform}
+.game-top{display:flex;flex-wrap:wrap;gap:1.1rem;align-items:center;justify-content:space-between}
+.game-id{display:flex;gap:1rem;align-items:center}
+.game-id img{width:56px;height:56px;border-radius:14px;border:1px solid rgba(255,255,255,.14)}
+.game-id .meta{font-family:var(--mono);font-size:.66rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim);margin-top:.34rem}
+.game-stats{display:flex;flex-wrap:wrap;gap:.5rem}
+.game-shots{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:1.3rem}
+@media(min-width:760px){.game-shots{grid-template-columns:repeat(6,1fr)}}
+.game-shots img{width:100%;border-radius:10px;border:1px solid rgba(255,255,255,.1)}
+.game-shots img:nth-child(n+4){display:none}
+@media(min-width:760px){.game-shots img:nth-child(n+4){display:block}}
+.game-note{margin-top:1.3rem;padding-top:1.1rem;border-top:1px solid var(--line);
+  display:grid;gap:.9rem}
+@media(min-width:760px){.game-note{grid-template-columns:1.3fr 1fr}}
+.game-note p{font-size:.93rem;color:var(--ink-dim)}
+.game-note .surf{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;color:var(--sky);line-height:1.9}
+
+/* ---- formats table ---- */
+.formats{padding:clamp(60px,8vw,110px) 0;border-top:1px solid var(--line)}
+.tablewrap{overflow-x:auto;margin-top:clamp(26px,3.5vw,44px);border:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:680px}
+th,td{text-align:left;padding:.95rem 1.1rem;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:.64rem;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--sky);background:var(--night-2);font-weight:500}
+td{font-size:.9rem;color:var(--ink-dim)}
+td:first-child{font-family:var(--display);font-weight:800;text-transform:uppercase;color:var(--ink);
+  font-size:.95rem;white-space:nowrap}
+td.mono{font-family:var(--mono);font-size:.78rem;font-variant-numeric:tabular-nums}
+tbody tr:last-child td{border-bottom:0}
+
+/* ---- supply path ---- */
+.path{padding:clamp(60px,8vw,110px) 0;border-top:1px solid var(--line);background:var(--night-2)}
+.hops{display:flex;flex-wrap:wrap;align-items:stretch;gap:.6rem;margin-top:clamp(26px,3.5vw,44px)}
+.hop{flex:1 1 150px;border:1px solid var(--line);border-radius:12px;padding:1rem 1.05rem;background:var(--night)}
+.hop .t{font-family:var(--display);font-weight:800;text-transform:uppercase;font-size:.98rem}
+.hop .d{font-family:var(--mono);font-size:.63rem;letter-spacing:.13em;text-transform:uppercase;color:var(--ink-dim);margin-top:.42rem}
+.hop.own{border-color:var(--red);box-shadow:inset 0 0 0 1px rgba(232,52,43,.35)}
+.hop.own .d{color:var(--red)}
+.arrow{align-self:center;color:var(--ink-dim);font-family:var(--mono);font-size:.9rem}
+pre{margin:clamp(24px,3vw,38px) 0 0;background:var(--night);border:1px solid var(--line);
+  border-radius:12px;padding:1.1rem 1.2rem;overflow-x:auto;
+  font-family:var(--mono);font-size:.76rem;line-height:1.85;color:var(--ink-dim)}
+pre b{color:var(--sky);font-weight:500}
+.path-cols{display:grid;gap:clamp(28px,4vw,48px);margin-top:clamp(34px,4.5vw,56px)}
+@media(min-width:820px){.path-cols{grid-template-columns:repeat(2,1fr)}}
+.path-cols h3{margin-bottom:.8rem}
+.path-cols li{font-size:.92rem;color:var(--ink-dim);margin-bottom:.55rem}
+.path-cols ul{margin:0;padding-left:1.1rem}
+
+/* ---- close ---- */
+.close{padding:clamp(70px,9vw,130px) 0;border-top:1px solid var(--line);text-align:center}
+.close h2{max-width:14em;margin:0 auto 1.4rem}
+.close .lede{margin:0 auto 2.2rem}
+footer{border-top:1px solid var(--line);padding:2.2rem 0 3rem;background:var(--night-2)}
+.foot{display:grid;gap:1rem;font-family:var(--mono);font-size:.68rem;line-height:1.9;color:var(--ink-dim)}
+@media(min-width:820px){.foot{grid-template-columns:1.4fr 1fr}}
+.foot a{color:var(--sky)}
+
+@media(prefers-reduced-motion:reduce){
+  *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important}
+  .thesis-body .w{opacity:1 !important}
+}
+</style>
+
+<div class="rail" aria-hidden="true">
+  <div class="rail-track"><div class="rail-fill" id="railFill"></div></div>
+  <div class="rail-label">Boost</div>
+</div>
+
+<nav class="nav">
+  <div class="nav-in">
+    <a class="mark" href="#top"><span class="mark-box"><span>WR</span></span><span class="mark-name">WRGames</span></a>
+    <div class="nav-links">
+      <a href="#thesis">Thesis</a>
+      <a href="#sequence">The 30 seconds</a>
+      <a href="#inventory">Inventory</a>
+      <a href="#formats">Formats</a>
+      <a href="#supply">Supply path</a>
+    </div>
+    <a class="banner" href="mailto:media@wrgames.com?subject=Deal%20ID%20request"><span><b>Get the deal ID</b><i>Direct</i></span></a>
+  </div>
+</nav>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">Owned &amp; operated mobile games · Shipping since 2020</p>
+        <h1>Nobody skips an ad they <em>asked for</em>.</h1>
+        <p class="lede">WRGames makes crash games. Ten million people who just launched a Lamborghini off a cliff and would happily watch thirty seconds to do it again. Full screen, sound on, no skip button — and sold direct by the studio that owns the pixels.</p>
+        <div class="hero-cta">
+          <a class="banner" href="mailto:media@wrgames.com?subject=WRGames%20inventory"><span><b>Talk to the publisher</b><i>No resellers in the way</i></span></a>
+          <span class="hero-sub">2 titles · iOS + Android · One seat</span>
+        </div>
+      </div>
+      <div class="phones">
+        <div class="phone"><img src="{{cd1}}" alt="Crash Delivery — a car falls from a cliff toward a valley" loading="lazy"><span class="chip"><span class="k">Sound</span><span class="v">On</span></span></div>
+        <div class="phone"><img src="{{cd0}}" alt="Crash Delivery — a sports car sailing off a cliff over a valley" loading="lazy"><span class="chip"><span class="k">Skip button</span><span class="v">None</span></span></div>
+        <div class="phone"><img src="{{am1}}" alt="Airplane Crash Madness — a jet flying low over a highway" loading="lazy"><span class="chip"><span class="k">Screen</span><span class="v">100%</span></span></div>
+      </div>
+    </div>
+
+    <div class="strip" aria-hidden="true">
+      <div class="strip-row">
+        <img src="{{cd0}}" alt=""><img src="{{cd1}}" alt=""><img src="{{cd2}}" alt=""><img src="{{cd3}}" alt=""><img src="{{cd4}}" alt=""><img src="{{cd5}}" alt=""><img src="{{am0}}" alt=""><img src="{{am1}}" alt=""><img src="{{am2}}" alt=""><img src="{{am3}}" alt="">
+        <img src="{{cd0}}" alt=""><img src="{{cd1}}" alt=""><img src="{{cd2}}" alt=""><img src="{{cd3}}" alt=""><img src="{{cd4}}" alt=""><img src="{{cd5}}" alt=""><img src="{{am0}}" alt=""><img src="{{am1}}" alt=""><img src="{{am2}}" alt=""><img src="{{am3}}" alt="">
+      </div>
+    </div>
+  </section>
+
+  <!-- THESIS -->
+  <section class="thesis" id="thesis">
+    <div class="wrap">
+      <p class="eyebrow">The thesis</p>
+      <p class="thesis-body" id="thesisText">Most advertising spends its life buying attention nobody offered. Games spent twenty years teaching people to ask for it. A player who has just missed the ramp does not experience your thirty seconds as an interruption — he experiences it as the price of another go. A price he named, and paid, on purpose. Everything else on this page is plumbing.</p>
+      <div class="pull">
+        <span class="eyebrow">Psycho-logic</span>
+        <p>You can't make an interruption welcome. You can put it where somebody was already saying yes.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SEQUENCE -->
+  <section class="seq" id="sequence">
+    <div class="wrap">
+      <div class="seq-head">
+        <h2>The thirty seconds,<br>in order</h2>
+        <p class="lede" style="max-width:26em">Five things happen between a wrecked car and a paid impression. Only one of them is an ad.</p>
+      </div>
+      <div class="steps">
+        <article class="step">
+          <span class="step-n">01 — Crash</span>
+          <h3>Failure is the product</h3>
+          <p>The run ends in a wreck. That is not the sad part of the session, it is the reason he installed it. Arousal is at its highest and he is leaning in, not leaving.</p>
+        </article>
+        <article class="step">
+          <span class="step-n">02 — Ask</span>
+          <h3>The only unit with a yes in it</h3>
+          <p>He taps a button to see your ad. Consent isn't inferred from a scroll depth — it's a deliberate tap, logged per impression.</p>
+        </article>
+        <article class="step">
+          <span class="step-n">03 — Watch</span>
+          <h3>Whole phone, sound up</h3>
+          <p>Not a 300×250 in a gutter next to a recipe. The entire device, held 30cm from a face, audio already on because the game needs it.</p>
+        </article>
+        <article class="step">
+          <span class="step-n">04 — Reward</span>
+          <h3>Your brand buys the next go</h3>
+          <p>The ad is the reason the game continues. Whatever he got — the fuel, the truck, the retry — you gave it to him. Nobody resents the sponsor of a favour.</p>
+        </article>
+        <article class="step">
+          <span class="step-n">05 — Auction</span>
+          <h3>One hop, and it's ours</h3>
+          <p>OpenRTB 2.6 straight out of our own SDK. <code style="font-family:var(--mono);font-size:.82em">DIRECT</code> in sellers.json. No chain of intermediaries quietly taking a cut of your CPM.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- LEDGER -->
+  <section class="ledger">
+    <div class="wrap">
+      <p class="eyebrow">The numbers</p>
+      <h2>Two titles.<br>Ten million downloads.</h2>
+      <div class="ledger-grid">
+        <div class="fig"><div class="n">10M+</div><div class="l">Downloads</div><div class="s">Crash Delivery, Google Play</div></div>
+        <div class="fig"><div class="n">4.5<span style="font-size:.5em">★</span></div><div class="l">App Store rating</div><div class="s">93,758 ratings, US storefront</div></div>
+        <div class="fig"><div class="n">6</div><div class="l">Years live</div><div class="s">Shipped Jan 2020 · v1.8.0 Aug 2026</div></div>
+        <div class="fig"><div class="n">2</div><div class="l">Titles</div><div class="s">Racing / simulation, iOS + Android</div></div>
+        <div class="fig"><div class="n">100%</div><div class="l">Owned &amp; operated</div><div class="s">We wrote the game and the SDK</div></div>
+        <div class="fig"><div class="n">0</div><div class="l">Resold impressions</div><div class="s">Nothing here was bought from anyone</div></div>
+      </div>
+      <p class="note">Store figures read from the public App Store and Google Play listings, September 2026, and they move. Everything else on this page is a property of the format or of our own plumbing — not a promise about your campaign. Ask for the deal ID and we'll send live delivery instead of a nice number in a box.</p>
+    </div>
+  </section>
+
+  <!-- INVENTORY -->
+  <section class="inv" id="inventory">
+    <div class="wrap">
+      <p class="eyebrow">The inventory</p>
+      <h2>Two games.<br>Both of them ours.</h2>
+      <div class="stack">
+
+        <div class="slot">
+          <article class="game" data-i="0" style="top:88px">
+            <div class="game-top">
+              <div class="game-id">
+                <img src="{{icon_cd}}" alt="Crash Delivery — a red supercar mid-fall over a valley">
+                <div>
+                  <h3>Crash Delivery</h3>
+                  <div class="meta">Racing · Simulation · iOS + Android</div>
+                </div>
+              </div>
+              <div class="game-stats">
+                <span class="chip"><span class="k">Downloads</span><span class="v">10M+</span></span>
+                <span class="chip"><span class="k">Rating</span><span class="v">4.5★</span></span>
+                <span class="chip"><span class="k">Ratings</span><span class="v">93,758</span></span>
+                <span class="chip"><span class="k">Live since</span><span class="v">2020</span></span>
+              </div>
+            </div>
+            <div class="game-shots">
+              <img src="{{cd0}}" alt="A sports car sails off a cliff over a green valley" loading="lazy">
+              <img src="{{cd4}}" alt="A car disintegrating on a downhill run" loading="lazy">
+              <img src="{{cd2}}" alt="A school bus launching off a jump" loading="lazy">
+              <img src="{{cd3}}" alt="The garage screen showing a grid of collectable vehicles" loading="lazy">
+              <img src="{{cd5}}" alt="A truck crashing through a wall in a desert level" loading="lazy">
+              <img src="{{cd1}}" alt="A car falling past a hot air balloon" loading="lazy">
+            </div>
+            <div class="game-note">
+              <p>Drive a pickup, a Lamborghini or a jet fighter off the biggest ramp available and deliver whatever survives. A run lasts under a minute, so a session is a stack of short, self-contained wins and wrecks — which is another way of saying it is a stack of natural ad breaks the player walks into himself.</p>
+              <div class="surf">
+                Surfaces →<br>
+                Rewarded video after a run<br>
+                Interstitial between runs, capped<br>
+                Playable in the rewarded slot<br>
+                Brand livery on the vehicle<br>
+                Roadside boards along the ramp
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <div class="slot">
+          <article class="game" data-i="1" style="top:104px">
+            <div class="game-top">
+              <div class="game-id">
+                <img src="{{icon_am}}" alt="Airplane Crash Madness — a jet nose-down over a motorway">
+                <div>
+                  <h3>Airplane Crash Madness</h3>
+                  <div class="meta">Simulation · Racing · iOS + Android</div>
+                </div>
+              </div>
+              <div class="game-stats">
+                <span class="chip"><span class="k">Rating</span><span class="v">3.8★</span></span>
+                <span class="chip"><span class="k">Ratings</span><span class="v">3,099</span></span>
+                <span class="chip"><span class="k">Format</span><span class="v">Portrait</span></span>
+                <span class="chip"><span class="k">Session</span><span class="v">Short</span></span>
+              </div>
+            </div>
+            <div class="game-shots">
+              <img src="{{am0}}" alt="An airliner flying between skyscrapers" loading="lazy">
+              <img src="{{am1}}" alt="A fighter jet skimming a motorway" loading="lazy">
+              <img src="{{am2}}" alt="A jet banking low over a city" loading="lazy">
+              <img src="{{am3}}" alt="A propeller plane breaking apart over trees" loading="lazy">
+              <img src="{{am0}}" alt="" loading="lazy">
+              <img src="{{am2}}" alt="" loading="lazy">
+            </div>
+            <div class="game-note">
+              <p>The same physics, moved into the sky and given a much larger fuselage to destroy. Newer, smaller, and useful for exactly that reason: it is where we test a format before it touches the ten-million-download title.</p>
+              <div class="surf">
+                Surfaces →<br>
+                Rewarded video after a crash<br>
+                Playable, first-party tested<br>
+                Livery on the airframe<br>
+                Test bed for new units
+              </div>
+            </div>
+          </article>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- FORMATS -->
+  <section class="formats" id="formats">
+    <div class="wrap">
+      <p class="eyebrow">The formats</p>
+      <h2>Four units.<br>All of them served by us.</h2>
+      <p class="lede" style="margin-top:1.1rem">No mediation waterfall quietly reselling you inventory you already bought. Standards below are the ones your ad server already speaks.</p>
+      <div class="tablewrap">
+        <table>
+          <thead>
+            <tr><th scope="col">Unit</th><th scope="col">Spec</th><th scope="col">Fires</th><th scope="col">Standard</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Rewarded video</td>
+              <td>15–30s, full screen, portrait, sound on by default</td>
+              <td class="mono">Player-initiated, after a run</td>
+              <td class="mono">VAST 4.2 · OpenRTB 2.6</td>
+            </tr>
+            <tr>
+              <td>Interstitial</td>
+              <td>Full screen static or video, frequency capped per session</td>
+              <td class="mono">Between runs</td>
+              <td class="mono">MRAID 3.0</td>
+            </tr>
+            <tr>
+              <td>Playable</td>
+              <td>≤5&nbsp;MB, HTML5, ends on a store CTA</td>
+              <td class="mono">In the rewarded slot</td>
+              <td class="mono">MRAID 3.0 · IAB playable</td>
+            </tr>
+            <tr>
+              <td>In-game livery</td>
+              <td>Brand texture on the vehicle, boards along the route</td>
+              <td class="mono">During the run</td>
+              <td class="mono">IAB intrinsic in-game</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUPPLY -->
+  <section class="path" id="supply">
+    <div class="wrap">
+      <p class="eyebrow">The supply path</p>
+      <h2>Four boxes.<br>Most paths have nine.</h2>
+      <div class="hops">
+        <div class="hop own"><div class="t">Player</div><div class="d">Consents, taps</div></div>
+        <span class="arrow">→</span>
+        <div class="hop own"><div class="t">WRGames SDK</div><div class="d">Our code · our game</div></div>
+        <span class="arrow">→</span>
+        <div class="hop"><div class="t">Exchange</div><div class="d">One SSP · direct seat</div></div>
+        <span class="arrow">→</span>
+        <div class="hop"><div class="t">Your DSP</div><div class="d">PMP or open</div></div>
+      </div>
+      <pre>sellers.json
+{ "seller_id": "wrgames-oando",
+  "name": "WRGames",
+  "seller_type": <b>"PUBLISHER"</b>,
+  "is_confidential": <b>0</b>,
+  "domain": "wrgames.com" }
+
+app-ads.txt   <b>DIRECT</b> on every line. No RESELLER entries. Ever.</pre>
+      <div class="path-cols">
+        <div>
+          <h3>What you can audit</h3>
+          <ul>
+            <li>Every bid request carries our own bundle ID and app-ads.txt entry.</li>
+            <li>Viewability is a property of the unit, not a vendor's estimate — the ad is the screen.</li>
+            <li>Measurement to the IAB Tech Lab / MRC in-game guidelines; MMP postbacks to AppsFlyer or Adjust.</li>
+            <li>SKAdNetwork and AdAttributionKit on iOS. No IDFA required for us to sell it.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>What you won't find</h3>
+          <ul>
+            <li>Cookies. There were never any to lose.</li>
+            <li>Arbitraged inventory, made-for-advertising placements, or a second SSP wearing our name.</li>
+            <li>Under-13 traffic in personalised demand — the titles are rated for everyone, so that cohort is age-gated out at the SDK.</li>
+            <li>An auto-playing ad the player never agreed to see.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLOSE -->
+  <section class="close">
+    <div class="wrap">
+      <p class="eyebrow">Next</p>
+      <h2>Two games. One seat. One hop.</h2>
+      <p class="lede">Tell us the campaign and the market. We'll send a deal ID, the app-ads.txt line, and last month's real delivery — in that order.</p>
+      <a class="banner" href="mailto:media@wrgames.com?subject=Deal%20ID%20request"><span><b>Get the deal ID</b><i>media@wrgames.com</i></span></a>
+    </div>
+  </section>
+
+  <footer>
+    <div class="wrap foot">
+      <div>
+        WRGames — owned &amp; operated mobile games.<br>
+        Operated by Fun to Mass Games FZE · Office 407, One UAQ Building, Umm Al Quwain, U.A.E. · Licence 7887.
+      </div>
+      <div>
+        Store figures: App Store &amp; Google Play, Sept 2026.<br>
+        <a href="mailto:media@wrgames.com">media@wrgames.com</a>
+      </div>
+    </div>
+  </footer>
+</main>
+
+<script>
+(function () {
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* boost bar = scroll progress */
+  var fill = document.getElementById('railFill');
+
+  /* thesis: words light up as the paragraph crosses the middle of the screen */
+  var thesis = document.getElementById('thesisText');
+  var words = [];
+  if (thesis && !reduce) {
+    var frag = document.createDocumentFragment();
+    thesis.textContent.split(/(\s+)/).forEach(function (tok) {
+      if (!tok.trim()) { frag.appendChild(document.createTextNode(tok)); return; }
+      var s = document.createElement('span');
+      s.className = 'w';
+      s.textContent = tok;
+      frag.appendChild(s);
+    });
+    thesis.textContent = '';
+    thesis.appendChild(frag);
+    words = thesis.querySelectorAll('.w');
+  }
+
+  var cards = document.querySelectorAll('.game');
+
+  function frame() {
+    var doc = document.documentElement;
+    var max = doc.scrollHeight - window.innerHeight;
+    if (fill) fill.style.height = (max > 0 ? Math.min(1, window.scrollY / max) * 100 : 0) + '%';
+
+    if (words.length) {
+      var r = thesis.getBoundingClientRect();
+      var span = r.height + window.innerHeight * 0.55;
+      var p = (window.innerHeight * 0.82 - r.top) / span;
+      p = Math.max(0, Math.min(1, p));
+      var lit = p * words.length * 1.12;
+      for (var i = 0; i < words.length; i++) {
+        words[i].style.opacity = i < lit ? 1 : (i < lit + 5 ? 0.62 : 0.32);
+      }
+    }
+
+    /* the card underneath shrinks a little as the next one covers it */
+    for (var c = 0; c < cards.length; c++) {
+      var card = cards[c];
+      var slot = card.parentElement.getBoundingClientRect();
+      var over = Math.max(0, Math.min(1, -slot.top / Math.max(1, slot.height)));
+      var scale = c === cards.length - 1 ? 1 : 1 - over * 0.05;
+      card.style.transform = 'scale(' + scale + ')';
+    }
+  }
+
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return;
+    ticking = true;
+    requestAnimationFrame(function () { frame(); ticking = false; });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', onScroll);
+  frame();
+})();
+</script>
