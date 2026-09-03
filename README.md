@@ -32,7 +32,8 @@ python3 assets_gen.py && python3 build.py && open index.html
 | Manifesto | Scroll-lit paragraph + four hard numbers |
 | Solutions | The five things sold: rewarded, playables, in-game surfaces, direct supply, measurement |
 | Inventory | The two titles and their surfaces, as sticky case-study cards |
-| Close | Deal ID, app-ads.txt line, last month's delivery |
+| Close | Two actions + what a buyer gets, in order |
+| Footer | Solutions, inventory links, contact, entity, supply-path line |
 
 ## The argument
 
@@ -64,3 +65,10 @@ every ad-format statement is a property of the format or of the SDK.
 - `v1` (games-led, Archivo/Plex, red HUD chrome) is in git history at the first commit.
 - The manifesto reveal runs word by word, not letter by letter: inline-block
   letters cannot wrap, so the per-character version broke words across lines.
+- `.project-card-col2 img { height: 100% }` has no definite parent height, so it
+  fell back to the source image's natural ~1125px and made each card 1288px tall
+  inside a 691px sticky container. With `.projects-section { z-index: 10 }`, the
+  overflow painted straight over the conclusion and footer. Fixed by giving the
+  image row a viewport-keyed height, letting cards flow on small screens, and
+  putting the close section and footer on `z-index: 20` so they can never be
+  covered again.

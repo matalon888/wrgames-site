@@ -142,10 +142,33 @@ img { display: block; max-width: 100%; }
 .project-card-col2 img { width: 100%; object-fit: cover; border-radius: 30px; height: 300px; }
 
 /* ===== CLOSE ===== */
-.close-section { padding: 120px 24px 90px; display: flex; flex-direction: column; align-items: center; gap: 26px; text-align: center; background-color: #0C0C0C; }
+.close-section { position: relative; z-index: 20; padding: 120px 24px 90px; display: flex; flex-direction: column; align-items: center; gap: 26px; text-align: center; background-color: #0C0C0C; }
 .close-heading { font-weight: 900; text-transform: uppercase; line-height: 0.88; letter-spacing: -0.02em; font-size: clamp(2.2rem, 7vw, 92px); max-width: 14ch; }
 .close-sub { font-weight: 300; line-height: 1.7; max-width: 520px; color: #8E9AA6; font-size: clamp(0.9rem, 1.6vw, 1.1rem); }
-footer { border-top: 1px solid rgba(215, 226, 234, 0.15); padding: 28px 24px 40px; display: flex; flex-wrap: wrap; gap: 12px 40px; justify-content: space-between; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #6E7A86; line-height: 2; }
+.close-actions { display: flex; flex-wrap: wrap; gap: 14px; justify-content: center; }
+.close-list { display: grid; gap: 1px; width: 100%; max-width: 940px; margin-top: 18px; background: rgba(215, 226, 234, 0.16); border: 1px solid rgba(215, 226, 234, 0.16); border-radius: 24px; overflow: hidden; }
+.close-list div { background: #0C0C0C; padding: 22px 22px 26px; text-align: left; }
+.close-list b { display: block; font-weight: 800; font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #7C8894; }
+.close-list span { display: block; margin-top: 10px; font-weight: 300; font-size: 0.95rem; line-height: 1.55; color: #D7E2EA; }
+
+footer { position: relative; z-index: 20; border-top: 1px solid rgba(215, 226, 234, 0.15); }
+.foot-cols { display: grid; gap: 34px; padding: 52px 24px 34px; max-width: 1400px; margin: 0 auto; }
+.foot-brand b { display: block; font-weight: 800; text-transform: uppercase; font-size: 1.05rem; color: #EAF2F8; letter-spacing: 0.02em; }
+.foot-brand p { margin-top: 12px; font-weight: 300; font-size: 0.88rem; line-height: 1.75; color: #8E9AA6; max-width: 36ch; }
+.foot-col h3 { font-size: 0.62rem; letter-spacing: 0.18em; text-transform: uppercase; color: #7C8894; font-weight: 500; margin-bottom: 14px; }
+.foot-col a, .foot-col span { display: block; font-size: 0.88rem; font-weight: 300; line-height: 2.1; color: #D7E2EA; }
+.foot-col a:hover { color: #FFFFFF; }
+.foot-col span { color: #8E9AA6; }
+.foot-bar { border-top: 1px solid rgba(215, 226, 234, 0.12); padding: 18px 24px 36px; max-width: 1400px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 8px 32px; justify-content: space-between; font-size: 0.62rem; font-weight: 300; letter-spacing: 0.1em; text-transform: uppercase; color: #6E7A86; line-height: 2; }
+@media (min-width: 768px) {
+  .foot-cols { grid-template-columns: 2fr 1fr 1fr 1.3fr; gap: 44px; padding: 64px 40px 40px; }
+  .foot-bar { padding: 20px 40px 44px; }
+}
+
+@media (max-width: 767px) {
+  .project-card-container { height: auto; position: static; }
+  .project-card { position: static; margin-bottom: 20px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   .fade-in { opacity: 1 !important; transform: none !important; }
@@ -213,11 +236,13 @@ footer { border-top: 1px solid rgba(215, 226, 234, 0.15); padding: 28px 24px 40p
   .project-card-container { top: 128px; }
   .project-card-meta { gap: 40px; }
   .project-card-info { gap: 20px; }
-  .project-card-images { flex-direction: row; gap: 20px; }
-  .project-card-col1 { width: 40%; gap: 20px; }
-  .project-card-col2 { width: 60%; }
+  .project-card-images { flex-direction: row; gap: 20px; height: clamp(240px, 40vh, 460px); }
+  .project-card-col1 { width: 40%; gap: 20px; height: 100%; }
+  .project-card-col2 { width: 60%; height: 100%; }
   .project-card-col2 img { height: 100%; border-radius: 60px; }
-  .project-card-col1 img { border-radius: 60px; }
+  .project-card-col1 img { border-radius: 60px; min-height: 0; }
+  .project-card-col1 img:first-child { flex: 0 0 38%; height: auto; }
+  .project-card-col1 img:last-child { flex: 1 1 0; height: auto; }
 }
 
 @media (min-width: 1024px) {
@@ -330,16 +355,52 @@ footer { border-top: 1px solid rgba(215, 226, 234, 0.15); padding: 28px 24px 40p
     <div class="fade-in" style="--fade-y: 30px;" data-delay="0">
       <h2 class="close-heading hero-heading">One hop. One seat.</h2>
     </div>
-    <p class="close-sub fade-in" style="--fade-y: 20px;" data-delay="120">Tell us the campaign and the market. You get a deal ID, the app-ads.txt line, and last month's real delivery — in that order.</p>
-    <div class="fade-in" style="--fade-y: 20px;" data-delay="220">
-      <a href="mailto:media@wrgames.com?subject=Deal%20ID%20request" class="contact-btn">media@wrgames.com</a>
+    <p class="close-sub fade-in" style="--fade-y: 20px;" data-delay="120">Tell us the campaign and the market. Nothing else is needed to start.</p>
+    <div class="close-actions fade-in" style="--fade-y: 20px;" data-delay="220">
+      <a href="mailto:media@wrgames.com?subject=Deal%20ID%20request" class="contact-btn">Request a deal ID</a>
+      <a href="mailto:media@wrgames.com?subject=Media%20kit" class="live-project-btn">Ask for the media kit</a>
+    </div>
+    <div class="close-list fade-in" style="--fade-y: 20px;" data-delay="320">
+      <div><b>You get first</b><span>A deal ID live in your DSP, with floors and frequency caps agreed before it opens.</span></div>
+      <div><b>Then</b><span>The app-ads.txt and sellers.json lines, so you can verify the path yourself.</span></div>
+      <div><b>Then</b><span>Last month's real delivery by unit and market — not a case study.</span></div>
     </div>
   </section>
 
   <footer>
-    <span>WRGames — an attention exchange built on games we own</span>
-    <span>Operated by Fun to Mass Games FZE · Umm Al Quwain, U.A.E. · Licence 7887</span>
-    <span>Store figures: App Store &amp; Google Play, Sept 2026</span>
+    <div class="foot-cols">
+      <div class="foot-brand">
+        <b>WRGames</b>
+        <p>An attention exchange built on games we own end to end. We sell the seconds a player asked for, one hop from his phone to your seat.</p>
+      </div>
+      <div class="foot-col">
+        <h3>Solutions</h3>
+        <a href="#solutions">Rewarded exchange</a>
+        <a href="#solutions">Playables</a>
+        <a href="#solutions">In-game surfaces</a>
+        <a href="#solutions">Direct supply path</a>
+        <a href="#solutions">Measurement</a>
+      </div>
+      <div class="foot-col">
+        <h3>Inventory</h3>
+        <a href="https://apps.apple.com/us/app/crash-delivery-car-jumping/id1494327881" target="_blank" rel="noopener noreferrer">Crash Delivery — App Store</a>
+        <a href="https://play.google.com/store/apps/details?id=com.whiteroom.crazydelivery" target="_blank" rel="noopener noreferrer">Crash Delivery — Google Play</a>
+        <a href="https://apps.apple.com/us/app/airplane-crash-madness-game/id1592988294" target="_blank" rel="noopener noreferrer">Airplane Crash Madness</a>
+        <a href="#inventory">The surfaces</a>
+      </div>
+      <div class="foot-col">
+        <h3>Contact</h3>
+        <a href="mailto:media@wrgames.com">media@wrgames.com</a>
+        <span>Fun to Mass Games FZE</span>
+        <span>Office 407, One UAQ Building</span>
+        <span>Umm Al Quwain, U.A.E. · Licence 7887</span>
+      </div>
+    </div>
+    <div class="foot-bar">
+      <span>© 2026 WRGames · all inventory owned &amp; operated</span>
+      <span>DIRECT in sellers.json · no reseller entries</span>
+      <span>Store figures: App Store &amp; Google Play, Sept 2026</span>
+    </div>
   </footer>
 </main>
 
